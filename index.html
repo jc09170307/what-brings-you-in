@@ -523,7 +523,7 @@ async function generateCase(){
   var custom=document.getElementById('custom-scenario').value.trim();
   var focuses=state.focuses.length>0?state.focuses.join(', '):'any area';
   var prompt=custom?'Create a TCM patient case based on: '+custom:'Create a realistic TCM patient case at '+state.difficulty+' level. Focus areas: '+focuses+'. Make it clinically rich for a DAcHM student.';
-  prompt+='\n\nReturn ONLY a JSON object. Use EXACTLY these key names, no variations:\n{\n"name": "Full Name",\n"age": 45,\n"sex": "Female",\n"occupation": "Teacher",\n"chiefComplaint": "what the patient says in their own words",\n"hiddenPattern": "TCM pattern",\n"hiddenPoints": "point prescription",\n"hiddenFormula": "herbal formula",\n"hiddenPrinciple": "treatment principle",\n"personality": "brief personality description",\n"backstory": "2-3 sentence background"\n}\nNo markdown, no extra text, just the JSON object.';
+  prompt+=' Return ONLY a JSON object with EXACTLY these keys: name, age, sex, occupation, chiefComplaint, hiddenPattern, hiddenPoints, hiddenFormula, hiddenPrinciple, personality, backstory. No markdown, no extra text.';
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:'You are a TCM clinical education expert generating realistic patient cases.',messages:[{role:'user',content:prompt}]})});
     var data=await resp.json();
