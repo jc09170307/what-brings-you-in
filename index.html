@@ -404,6 +404,14 @@ function extractJSON(text){
   if(start > -1 && end > start) return text.slice(start, end+1);
   return text;
 }
+function safeParsePatient(text){
+  var raw=extractJSON(text);
+  try{ return JSON.parse(raw); }catch(e){
+    console.error('Parse failed:',raw.slice(0,300));
+    return null;
+  }
+}
+
 
 // ═══ API KEY ═══
 function getApiKey(){
