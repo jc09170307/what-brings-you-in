@@ -530,6 +530,16 @@ async function generateCase(){
     if(data.error){toast('API: '+data.error.message);spinner.style.display='none';return;}
     var text=data.content[0].text.trim();
     state.patient=JSON.parse(extractJSON(text));
+    // Normalize field names — Claude sometimes varies them
+    var p=state.patient;
+    p.chiefComplaint=p.chiefComplaint||p.chief_complaint||p.complaint||p.presenting_complaint||p.cc||'Patient presents with symptoms';
+    p.hiddenPattern=p.hiddenPattern||p.hidden_pattern||p.pattern||p.tcmPattern||'';
+    p.hiddenPoints=p.hiddenPoints||p.hidden_points||p.points||p.acupoints||'';
+    p.hiddenFormula=p.hiddenFormula||p.hidden_formula||p.formula||p.herbal_formula||'';
+    p.hiddenPrinciple=p.hiddenPrinciple||p.hidden_principle||p.principle||p.treatment_principle||'';
+    p.personality=p.personality||p.character||'realistic patient';
+    p.backstory=p.backstory||p.background||p.history||'';
+    p.occupation=p.occupation||p.job||p.work||'';
     state.history=[];state.questionCount=0;
     launchInterview();
   }catch(e){toast('Error: '+e.message);console.error(e);}
