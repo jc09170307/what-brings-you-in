@@ -34,10 +34,10 @@ body{padding-bottom:4rem}
 .hdr-brand{font-family:'DM Serif Display',serif;font-size:17px;color:var(--pur2)}
 .hdr-brand em{color:var(--gold);font-style:italic}
 .theme-btn{background:var(--bg3);border:none;border-radius:20px;padding:5px 10px;font-size:13px;cursor:pointer;color:var(--tx2)}
-.nav-wrap{position:sticky;top:49px;z-index:100;background:var(--nav);border-bottom:1px solid var(--bd);overflow-x:auto;scrollbar-width:none}
+.nav-wrap{position:sticky;top:49px;z-index:100;background:var(--nav);border-bottom:1px solid var(--bd);overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap}
 .nav-wrap::-webkit-scrollbar{display:none}
-.nav-inner{display:flex;gap:4px;padding:.4rem .75rem;width:max-content}
-.pill{font-size:11.5px;padding:5px 14px;border:1px solid var(--bd2);border-radius:100px;background:var(--bg3);cursor:pointer;color:var(--tx2);white-space:nowrap;font-weight:500;transition:all .12s}
+.nav-inner{display:inline-flex;gap:4px;padding:.4rem .75rem;width:max-content;min-width:100%}
+.pill{font-size:11px;padding:5px 11px;border:1px solid var(--bd2);border-radius:100px;background:var(--bg3);cursor:pointer;color:var(--tx2);white-space:nowrap;font-weight:500;transition:all .12s}
 .pill.active{background:var(--pur);color:#fff;border-color:var(--pur);font-weight:600}
 .sec{padding:.75rem 1rem 3rem;display:none}
 .sec.active{display:block}
