@@ -523,23 +523,31 @@ async function generateCase(){
   var custom=document.getElementById('custom-scenario').value.trim();
   var focuses=state.focuses.length>0?state.focuses.join(', '):'any area';
   var prompt=custom?'Create a TCM patient case based on: '+custom:'Create a realistic TCM patient case at '+state.difficulty+' level. Focus areas: '+focuses+'. Make it clinically rich for a DAcHM student.';
-  prompt+='\n\nReturn ONLY JSON with keys: name, age (number), sex, occupation, chiefComplaint (vague, patient language), hiddenPattern, hiddenPoints, hiddenFormula, hiddenPrinciple, personality, backstory. No markdown.';
+  prompt+='\n\nReturn ONLY a JSON object. Use EXACTLY these key names, no variations:\n{\n"name": "Full Name",\n"age": 45,\n"sex": "Female",\n"occupation": "Teacher",\n"chiefComplaint": "what the patient says in their own words",\n"hiddenPattern": "TCM pattern",\n"hiddenPoints": "point prescription",\n"hiddenFormula": "herbal formula",\n"hiddenPrinciple": "treatment principle",\n"personality": "brief personality description",\n"backstory": "2-3 sentence background"\n}\nNo markdown, no extra text, just the JSON object.';
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:'You are a TCM clinical education expert generating realistic patient cases.',messages:[{role:'user',content:prompt}]})});
     var data=await resp.json();
     if(data.error){toast('API: '+data.error.message);spinner.style.display='none';return;}
     var text=data.content[0].text.trim();
     state.patient=JSON.parse(extractJSON(text));
-    // Normalize field names — Claude sometimes varies them
+    // Normalize field names — handle every possible variant Claude might return
     var p=state.patient;
-    p.chiefComplaint=p.chiefComplaint||p.chief_complaint||p.complaint||p.presenting_complaint||p.cc||'Patient presents with symptoms';
-    p.hiddenPattern=p.hiddenPattern||p.hidden_pattern||p.pattern||p.tcmPattern||'';
-    p.hiddenPoints=p.hiddenPoints||p.hidden_points||p.points||p.acupoints||'';
-    p.hiddenFormula=p.hiddenFormula||p.hidden_formula||p.formula||p.herbal_formula||'';
-    p.hiddenPrinciple=p.hiddenPrinciple||p.hidden_principle||p.principle||p.treatment_principle||'';
-    p.personality=p.personality||p.character||'realistic patient';
-    p.backstory=p.backstory||p.background||p.history||'';
-    p.occupation=p.occupation||p.job||p.work||'';
+    // Chief complaint — most critical field
+    p.chiefComplaint=p.chiefComplaint||p.chief_complaint||p.complaint||
+      p.presenting_complaint||p.presentingComplaint||p.cc||p.main_complaint||
+      p.mainComplaint||p.reason||p.reason_for_visit||p.reasonForVisit||
+      p.symptoms||p.chief||'I haven't been feeling well lately.';
+    p.hiddenPattern=p.hiddenPattern||p.hidden_pattern||p.pattern||
+      p.tcm_pattern||p.tcmPattern||p.diagnosis||p.tcm_diagnosis||'';
+    p.hiddenPoints=p.hiddenPoints||p.hidden_points||p.points||
+      p.acupoints||p.point_prescription||p.acupuncture_points||'';
+    p.hiddenFormula=p.hiddenFormula||p.hidden_formula||p.formula||
+      p.herbal_formula||p.herbs||p.herbal_prescription||'';
+    p.hiddenPrinciple=p.hiddenPrinciple||p.hidden_principle||p.principle||
+      p.treatment_principle||p.tx_principle||'';
+    p.personality=p.personality||p.character||p.demeanor||'realistic patient';
+    p.backstory=p.backstory||p.background||p.history||p.social_history||'';
+    p.occupation=p.occupation||p.job||p.work||p.profession||'';
     state.history=[];state.questionCount=0;
     launchInterview();
   }catch(e){toast('Error: '+e.message);console.error(e);}
