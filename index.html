@@ -385,6 +385,19 @@ body{padding-bottom:4rem}
 <div class="toast" id="toast"></div>
 
 <script>
+
+// ═══ API KEY ═══
+function getApiKey(){
+  return localStorage.getItem('jon-api-key')||'';
+}
+function checkApiKey(){
+  if(!getApiKey()){
+    toast('⚠️ No API key — set it in The Dantian → ⚙️ Settings');
+    return false;
+  }
+  return true;
+}
+
 // ═══════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════
@@ -485,6 +498,7 @@ function toggleFocus(f,el){
 // GENERATE CASE
 // ═══════════════════════════════════════
 async function generateCase(){
+  if(!checkApiKey()) return;
   var spinner=document.getElementById('gen-case-spinner');
   spinner.style.display='inline-block';
   var custom=document.getElementById('custom-scenario').value.trim();
@@ -492,7 +506,7 @@ async function generateCase(){
   var prompt=custom?'Create a TCM patient case based on: '+custom:'Create a realistic TCM patient case at '+state.difficulty+' level. Focus areas: '+focuses+'. Make it clinically rich for a DAcHM student.';
   prompt+='\n\nReturn ONLY JSON with keys: name, age (number), sex, occupation, chiefComplaint (vague, patient language), hiddenPattern, hiddenPoints, hiddenFormula, hiddenPrinciple, personality, backstory. No markdown.';
   try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:'You are a TCM clinical education expert generating realistic patient cases.',messages:[{role:'user',content:prompt}]})});
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:'You are a TCM clinical education expert generating realistic patient cases.',messages:[{role:'user',content:prompt}]})});
     var data=await resp.json();
     var text=data.content[0].text.trim().replace(/```json|```/g,'').trim();
     state.patient=JSON.parse(text);
@@ -559,6 +573,7 @@ function updateQCount(){
 }
 
 async function sendQuestion(){
+  if(!checkApiKey()) return;
   var field=document.getElementById('ask-field');
   var q=field.value.trim();if(!q||!state.patient)return;
   field.value='';addBubble('student',q);
@@ -570,7 +585,7 @@ async function sendQuestion(){
   try{
     var msgs=state.history.filter(function(m){return m.role!=='system'});
     var sys=state.history[0].content;
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:300,system:sys+'\n\nRespond as this patient. 1-3 sentences. Natural language, not clinical.',messages:msgs})});
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:300,system:sys+'\n\nRespond as this patient. 1-3 sentences. Natural language, not clinical.',messages:msgs})});
     var data=await resp.json();
     var ans=data.content[0].text.trim();
     state.history.push({role:'assistant',content:ans});
@@ -580,6 +595,7 @@ async function sendQuestion(){
 }
 
 async function submitDiagnosis(){
+  if(!checkApiKey()) return;
   if(!state.patient){toast('Generate a case first');return;}
   var patterns=Array.from(document.querySelectorAll('.dx-chip.sel')).map(function(c){return c.textContent});
   var custom=document.getElementById('custom-pattern').value.trim();
@@ -592,7 +608,7 @@ async function submitDiagnosis(){
   var conv=state.history.filter(function(m){return m.role==='user'||m.role==='assistant'}).map(function(m){return(m.role==='user'?'Student: ':'Patient: ')+m.content}).join('\n');
   var prompt='Patient: '+state.patient.name+', '+state.patient.age+'. CC: '+state.patient.chiefComplaint+'\nConversation:\n'+conv+'\nStudent Dx: Patterns: '+patterns.join(', ')+' | Principle: '+principle+' | Points: '+points+' | Formula: '+formula+'\nActual: Pattern: '+state.patient.hiddenPattern+' | Principle: '+state.patient.hiddenPrinciple+' | Points: '+state.patient.hiddenPoints+' | Formula: '+state.patient.hiddenFormula+'\n\nReturn ONLY JSON: {score(0-100), grade(string), patternFeedback, principleFeedback, pointsFeedback, formulaFeedback, studyNext}. No markdown.';
   try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:'You are an experienced TCM clinical supervisor giving constructive feedback to a DAcHM student.',messages:[{role:'user',content:prompt}]})});
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:'You are an experienced TCM clinical supervisor giving constructive feedback to a DAcHM student.',messages:[{role:'user',content:prompt}]})});
     var data=await resp.json();
     var text=data.content[0].text.trim().replace(/```json|```/g,'').trim();
     var fb=JSON.parse(text);
