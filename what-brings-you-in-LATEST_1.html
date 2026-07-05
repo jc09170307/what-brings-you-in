@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="What Brings You In">
+<meta name="theme-color" content="#7c5cbf">
+<title>What Brings You In 🩺</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Zen+Tokyo+Zoo&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+button,input,textarea,select{font-family:inherit;-webkit-appearance:none;appearance:none}
+:root{
+  --pur:#7c5cbf;--pur2:#9b7dd4;--purL:#2a1f4a;
+  --teal:#12a37a;--teal2:#0d7a5c;--tealL:#082d1c;
+  --gold:#c9973a;--goldL:#3a2a0a;
+  --bg:#0d0f1a;--bg2:#12141f;--bg3:#1a1d2e;--bg4:#20233a;
+  --tx:#e8e6f0;--tx2:#a8a4c0;--tx3:#5a5870;
+  --bd:rgba(124,92,191,.15);--bd2:rgba(255,255,255,.06);
+  --card:#12141f;--nav:#0d0f1a;
+}
+[data-theme="light"]{
+  --bg:#f4f2fc;--bg2:#fff;--bg3:#ede9f8;--bg4:#e4dff5;
+  --tx:#1a1730;--tx2:#4a4670;--tx3:#9090b0;
+  --bd:rgba(124,92,191,.2);--bd2:rgba(0,0,0,.06);
+  --card:#fff;--nav:#f4f2fc;--purL:#ede9f8;--tealL:#e1f5ee;
+}
+html,body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body{padding-bottom:4rem}
+.hdr{padding:.85rem 1rem .75rem;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;background:var(--bg);position:sticky;top:0;z-index:200}
+.hdr-brand{font-family:'DM Serif Display',serif;font-size:17px;color:var(--pur2)}
+.hdr-brand em{color:var(--gold);font-style:italic}
+.theme-btn{background:var(--bg3);border:none;border-radius:20px;padding:5px 10px;font-size:13px;cursor:pointer;color:var(--tx2)}
+
+
+
+
+
+.sec{padding:.75rem 1rem 3rem;display:none}
+.sec.active{display:block}
+.sec-lbl{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;padding:.6rem 0 .4rem}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:1rem 1.1rem;margin-bottom:.6rem}
+.field{width:100%;border:1.5px solid var(--bd2);border-radius:10px;padding:.6rem .8rem;font-size:14px;background:var(--bg3);color:var(--tx);margin-bottom:.5rem;resize:vertical;outline:none;transition:border .15s;font-family:'DM Sans',sans-serif}
+.field:focus{border-color:var(--pur)}
+.field-lbl{font-size:11px;color:var(--tx3);margin-bottom:.25rem;font-weight:500;display:block}
+.btn{width:100%;padding:12px;background:var(--pur);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;transition:opacity .12s;font-family:'DM Sans',sans-serif;margin-bottom:.4rem}
+.btn:active{opacity:.82}
+.btn.sec-btn{background:var(--bg3);color:var(--tx2);border:1px solid var(--bd2)}
+.btn.teal{background:var(--teal)}
+.btn-row{display:flex;gap:.5rem;margin-bottom:.5rem}
+.btn-row .btn{flex:1;margin:0}
+
+/* SETUP */
+.difficulty-row{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.65rem}
+.diff-btn{flex:1;min-width:70px;padding:.55rem .4rem;border:1.5px solid var(--bd2);border-radius:10px;background:var(--bg3);color:var(--tx3);font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .12s}
+.diff-btn.active{border-color:var(--pur);color:var(--pur2);background:var(--purL)}
+.focus-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.65rem}
+.focus-btn{padding:.6rem .5rem;border:1.5px solid var(--bd2);border-radius:12px;background:var(--bg3);color:var(--tx2);font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .12s}
+.focus-btn.active{border-color:var(--teal);color:var(--teal);background:var(--tealL)}
+
+/* PATIENT CARD */
+.patient-card{background:linear-gradient(135deg,#100f20,#0d1530);border:1px solid var(--bd);border-radius:20px;padding:1.25rem;margin:.5rem 0 .85rem}
+.patient-name{font-family:'DM Serif Display',serif;font-size:22px;color:var(--pur2);margin-bottom:.2rem}
+.patient-meta{font-size:12px;color:var(--tx3);margin-bottom:.75rem}
+.patient-cc{font-size:14px;color:var(--tx2);line-height:1.6;font-style:italic}
+.patient-cc-lbl{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+
+/* CHAT */
+.chat-wrap{display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;max-height:340px;overflow-y:auto;padding:.25rem 0}
+.bubble{max-width:88%;padding:.65rem .85rem;border-radius:16px;font-size:13px;line-height:1.6}
+.bubble.patient{background:var(--bg3);color:var(--tx2);border:1px solid var(--bd2);align-self:flex-start;border-bottom-left-radius:4px}
+.bubble.student{background:var(--pur);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.bubble.system{background:var(--goldL);color:var(--gold);border:1px solid rgba(201,151,58,.2);align-self:center;font-size:11px;font-style:italic;text-align:center;border-radius:20px;padding:.35rem .85rem}
+.ask-row{display:flex;gap:.5rem;align-items:flex-end;margin-top:.5rem}
+.ask-field{flex:1;border:1.5px solid var(--bd2);border-radius:12px;padding:.6rem .8rem;font-size:13px;background:var(--bg3);color:var(--tx);outline:none;resize:none;transition:border .15s;font-family:'DM Sans',sans-serif;max-height:80px}
+.ask-field:focus{border-color:var(--pur)}
+.ask-btn{width:44px;height:44px;border-radius:12px;border:none;background:var(--pur);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.quick-asks{display:flex;gap:.3rem;flex-wrap:wrap;margin:.4rem 0}
+.qa-btn{font-size:11px;padding:4px 10px;border:1px solid var(--bd2);border-radius:20px;background:var(--bg3);color:var(--tx3);cursor:pointer;transition:all .12s}
+.qa-btn:active{border-color:var(--pur);color:var(--pur2)}
+
+/* DIAGNOSIS */
+.dx-panel{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:1rem 1.1rem;margin:.5rem 0}
+.dx-section{font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin:.5rem 0 .25rem}
+.dx-chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.4rem}
+.dx-chip{font-size:12px;padding:4px 11px;border:1.5px solid var(--bd2);border-radius:20px;cursor:pointer;background:var(--bg3);color:var(--tx2);transition:all .12s}
+.dx-chip.sel{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+/* FEEDBACK */
+.feedback-box{background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:1rem 1.1rem;margin:.5rem 0}
+.fb-score{font-family:'DM Serif Display',serif;font-size:48px;text-align:center;line-height:1}
+.fb-grade{font-size:13px;color:var(--tx3);text-align:center;margin-top:.2rem;margin-bottom:.75rem}
+.fb-section{font-size:11px;font-weight:700;color:var(--pur2);margin:.5rem 0 .2rem;text-transform:uppercase;letter-spacing:.06em}
+.fb-text{font-size:13px;color:var(--tx2);line-height:1.65}
+
+/* CASE LIBRARY */
+.lib-case{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:.9rem 1rem;margin-bottom:.5rem;cursor:pointer;transition:border-color .12s}
+.lib-case:active{border-color:var(--pur)}
+.lib-case-name{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:.2rem}
+.lib-case-cc{font-size:12px;color:var(--tx2);font-style:italic;margin-bottom:.3rem;line-height:1.5}
+.lib-case-tags{display:flex;gap:.3rem;flex-wrap:wrap}
+.lib-tag{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--purL);color:var(--pur2);border:1px solid var(--bd)}
+.lib-tag.teal{background:var(--tealL);color:var(--teal)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.65rem}
+.stat-card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:.9rem;text-align:center}
+.stat-val{font-family:'DM Serif Display',serif;font-size:30px;color:var(--pur2)}
+.stat-lbl{font-size:11px;color:var(--tx3);margin-top:3px}
+.weak-item{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:.75rem 1rem;margin-bottom:.4rem;display:flex;justify-content:space-between;align-items:center}
+.weak-name{font-size:13px;color:var(--tx)}
+.weak-score{font-size:12px;font-weight:700;color:var(--gold)}
+.score-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-top:.3rem}
+.score-bar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+
+/* REFERENCE */
+.ref-cat{font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin:.75rem 0 .3rem}
+.ref-item{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:.75rem 1rem;margin-bottom:.4rem}
+.ref-name{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:.2rem}
+.ref-detail{font-size:12px;color:var(--tx2);line-height:1.6}
+.ref-search{width:100%;border:1.5px solid var(--bd2);border-radius:10px;padding:.6rem .8rem;font-size:14px;background:var(--bg3);color:var(--tx);outline:none;margin-bottom:.65rem;font-family:'DM Sans',sans-serif}
+.ref-search:focus{border-color:var(--pur)}
+
+/* NEON WHY */
+.neon-wrap{text-align:center;padding:1.5rem .75rem 2rem}
+.neon-border{border-radius:20px;padding:2rem 1rem 1.75rem;margin-bottom:1.25rem;background:#08040f;position:relative;overflow:hidden;border:1px solid rgba(255,0,200,.15)}
+.neon-border::before{content:'';position:absolute;inset:0;border-radius:20px;box-shadow:inset 0 0 40px rgba(255,0,150,.08),inset 0 0 1px rgba(255,0,200,.3)}
+/* Japanese kanji top decoration */
+.neon-kanji{font-family:'Noto Sans JP',sans-serif;font-weight:900;font-size:13px;letter-spacing:.3em;color:rgba(255,0,200,.45);text-transform:uppercase;margin-bottom:.85rem;display:block;text-shadow:0 0 8px rgba(255,0,200,.4)}
+/* Main WHY sign — Zen Tokyo Zoo for that chunky Japanese arcade feel */
+.neon-sign{font-family:'Zen Tokyo Zoo',cursive;font-size:72px;color:#fff;display:block;margin-bottom:.5rem;letter-spacing:.05em;line-height:1;
+  text-shadow:0 0 4px #fff,0 0 11px #fff,0 0 19px #fff,0 0 40px #f09,0 0 80px #f09,0 0 90px #f09,0 0 150px #f09;
+  animation:mainFlicker 6s infinite}
+/* Tagline — Noto Sans JP heavy, glowing cyan */
+.neon-sub{font-family:'Noto Sans JP',sans-serif;font-weight:900;font-size:15px;color:#0ff;display:block;letter-spacing:.12em;line-height:1.6;
+  text-shadow:0 0 5px #fff,0 0 10px #0ff,0 0 20px #0ff,0 0 40px #0ff,0 0 80px #08f;
+  animation:subFlicker 4s infinite alternate}
+/* Bottom japanese subtitle */
+.neon-jp{font-family:'Noto Sans JP',sans-serif;font-weight:900;font-size:11px;color:rgba(255,0,200,.6);letter-spacing:.25em;margin-top:.75rem;display:block;
+  text-shadow:0 0 8px #f09,0 0 16px #f09}
+@keyframes mainFlicker{
+  0%,9%,11%,49%,51%,100%{text-shadow:0 0 4px #fff,0 0 11px #fff,0 0 19px #fff,0 0 40px #f09,0 0 80px #f09,0 0 90px #f09,0 0 150px #f09;opacity:1}
+  10%{text-shadow:none;opacity:.8}
+  50%{text-shadow:0 0 4px #fff,0 0 11px #fff,0 0 19px #fff,0 0 40px #f09;opacity:.95}
+}
+@keyframes subFlicker{
+  0%,40%,42%,100%{text-shadow:0 0 5px #fff,0 0 10px #0ff,0 0 20px #0ff,0 0 40px #0ff,0 0 80px #08f;opacity:1}
+  41%{text-shadow:none;opacity:.7}
+}
+/* Image — no file picker, just a container */
+.why-img-wrap{width:100%;aspect-ratio:4/3;border-radius:16px;overflow:hidden;margin-top:.85rem;position:relative;background:#08040f;border:1px solid rgba(255,0,200,.2)}
+.why-img-wrap img{width:100%;height:100%;object-fit:cover;border-radius:15px;display:block}
+.why-caption{font-size:11px;color:var(--tx3);text-align:center;margin-top:.85rem;font-style:italic;line-height:1.7;letter-spacing:.02em}
+
+/* LOADING */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--bd2);border-top-color:var(--pur2);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.3rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg2);border:1px solid var(--pur);border-radius:20px;padding:.5rem 1.1rem;font-size:13px;color:var(--tx);z-index:9999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+
+
+
+
+
+/* NAV — bulletproof 2-row wrap for Samsung Chrome PWA */
+.nav-wrap {
+  background: var(--nav);
+  border-bottom: 1px solid var(--bd);
+  padding: .4rem .75rem;
+  display: block;
+  width: 100%;
+  position: sticky;
+  top: 49px;
+  z-index: 100;
+}
+.nav-inner {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 100%;
+}
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  padding: 5px 12px;
+  border: 1px solid var(--bd2);
+  border-radius: 100px;
+  background: var(--bg3);
+  cursor: pointer;
+  color: var(--tx2);
+  white-space: nowrap;
+  font-weight: 500;
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  line-height: 1.5;
+  font-family: 'DM Sans', sans-serif;
+}
+.pill.active {
+  background: var(--pur) !important;
+  color: #fff !important;
+  border-color: var(--pur) !important;
+  font-weight: 600 !important;
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-brand">What Brings You In <em>🩺</em></div>
+  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️</button>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-inner">
+    <button class="pill active" onclick="showSec('setup')">📋 New Case</button>
+    <button class="pill" id="pill-interview" style="display:none" onclick="showSec('interview')">🗣 Interview</button>
+    <button class="pill" onclick="showSec('library')">📚 Library</button>
+    <button class="pill" onclick="showSec('stats')">📊 Stats</button>
+    <button class="pill" onclick="showSec('reference')">📖 Reference</button>
+    <button class="pill" onclick="showSec('history')">🗂 History</button>
+    <button class="pill" onclick="showSec('why')">⚠️ Why</button>
+  </div>
+</div>
+
+<!-- ══════════════════ SETUP ══════════════════ -->
+<div class="sec active" id="sec-setup">
+  <div class="sec-lbl">Difficulty</div>
+  <div class="difficulty-row">
+    <button class="diff-btn active" onclick="setDiff('beginner',this)">🌱 Beginner</button>
+    <button class="diff-btn" onclick="setDiff('intermediate',this)">🔥 Intermediate</button>
+    <button class="diff-btn" onclick="setDiff('advanced',this)">⚡ Advanced</button>
+    <button class="diff-btn" onclick="setDiff('boards',this)">🎓 Boards</button>
+  </div>
+  <div class="sec-lbl">Clinical focus</div>
+  <div class="focus-grid">
+    <button class="focus-btn active" onclick="toggleFocus('Internal medicine',this)">🫀 Internal</button>
+    <button class="focus-btn active" onclick="toggleFocus('Musculoskeletal',this)">🦴 MSK</button>
+    <button class="focus-btn active" onclick="toggleFocus('Mental-emotional',this)">🧠 Mental-Emotional</button>
+    <button class="focus-btn active" onclick="toggleFocus('Gynecology',this)">🌸 Gynecology</button>
+    <button class="focus-btn active" onclick="toggleFocus('Digestive',this)">🌀 Digestive</button>
+    <button class="focus-btn active" onclick="toggleFocus('Respiratory',this)">🫁 Respiratory</button>
+    <button class="focus-btn" onclick="toggleFocus('Dermatology',this)">✨ Dermatology</button>
+    <button class="focus-btn" onclick="toggleFocus('Pediatrics',this)">👶 Pediatrics</button>
+  </div>
+  <div class="sec-lbl">Custom scenario (optional)</div>
+  <textarea class="field" id="custom-scenario" rows="2" placeholder="e.g. 45-year-old woman with chronic insomnia and palpitations..."></textarea>
+  <button class="btn" onclick="generateCase()"><span id="gen-case-spinner" style="display:none" class="spinner"></span>🩺 Generate Patient Case</button>
+  <button class="btn sec-btn" onclick="surpriseCase()">🎲 Surprise Me</button>
+</div>
+
+<!-- ══════════════════ INTERVIEW ══════════════════ -->
+<div class="sec" id="sec-interview">
+  <div class="patient-card" id="patient-card">
+    <div class="patient-name" id="pt-name">—</div>
+    <div class="patient-meta" id="pt-meta"></div>
+    <div class="patient-cc-lbl">Chief Complaint</div>
+    <div class="patient-cc" id="pt-cc"></div>
+  </div>
+  <div class="sec-lbl">Interview <span id="q-count" style="color:var(--pur2);font-size:11px"></span></div>
+  <div class="quick-asks">
+    <button class="qa-btn" onclick="quickAsk('How long has this been going on?')">⏱ Duration</button>
+    <button class="qa-btn" onclick="quickAsk('What makes it worse or better?')">↕️ Mod. factors</button>
+    <button class="qa-btn" onclick="quickAsk('How is your sleep?')">🌙 Sleep</button>
+    <button class="qa-btn" onclick="quickAsk('How is your digestion and appetite?')">🍽 Digestion</button>
+    <button class="qa-btn" onclick="quickAsk('How are your energy levels?')">⚡ Energy</button>
+    <button class="qa-btn" onclick="quickAsk('How are you feeling emotionally?')">💭 Emotions</button>
+    <button class="qa-btn" onclick="quickAsk('Tell me about your thirst and fluid intake.')">💧 Thirst</button>
+    <button class="qa-btn" onclick="quickAsk('Any changes in urination or bowel movements?')">🚽 Elimination</button>
+    <button class="qa-btn" onclick="quickAsk('Are you generally warm or cold?')">🌡 Temp</button>
+    <button class="qa-btn" onclick="quickAsk('Can you describe your tongue coating and any pulse sensations?')">👅 T&P</button>
+  </div>
+  <div class="chat-wrap" id="chat-wrap"></div>
+  <div class="ask-row">
+    <textarea class="ask-field" id="ask-field" rows="1" placeholder="Ask the patient anything..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendQuestion()}"></textarea>
+    <button class="ask-btn" onclick="sendQuestion()">↑</button>
+  </div>
+
+  <div class="dx-panel">
+    <div class="sec-lbl" style="padding-top:0">Your Diagnosis</div>
+    <div class="dx-section">TCM Pattern(s)</div>
+    <div class="dx-chips">
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">LV Qi Stagnation</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">HT Blood Deficiency</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">KD Yin Deficiency</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">SP Qi Deficiency</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">LV/KD Yin Deficiency</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">Phlegm-Heat</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">Blood Stasis</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">KD Yang Deficiency</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">Damp-Heat</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">Wind-Cold Invasion</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">LV Yang Rising</button>
+      <button class="dx-chip" onclick="this.classList.toggle('sel')">HT & SP Deficiency</button>
+    </div>
+    <input class="field" id="custom-pattern" placeholder="Or type your own pattern...">
+    <div class="dx-section">Treatment Principle</div>
+    <textarea class="field" id="dx-principle" rows="2" placeholder="e.g. Soothe LV, tonify HT Blood, calm Shen..."></textarea>
+    <div class="dx-section">Point Prescription</div>
+    <textarea class="field" id="dx-points" rows="2" placeholder="e.g. LV 3, HT 7, PC 6, SP 6, Yin Tang..."></textarea>
+    <div class="dx-section">Formula / Herbs</div>
+    <textarea class="field" id="dx-formula" rows="2" placeholder="e.g. Xiao Yao San modified + Suan Zao Ren..."></textarea>
+    <button class="btn teal" onclick="submitDiagnosis()"><span id="submit-spinner" style="display:none" class="spinner"></span>✅ Submit & Get Feedback</button>
+  </div>
+
+  <div id="feedback-wrap" style="display:none">
+    <div class="sec-lbl">Clinical Feedback</div>
+    <div class="feedback-box">
+      <div class="fb-score" id="fb-score">—</div>
+      <div class="fb-grade" id="fb-grade"></div>
+      <div class="fb-section">Pattern Assessment</div><div class="fb-text" id="fb-pattern"></div>
+      <div class="fb-section">Treatment Principle</div><div class="fb-text" id="fb-principle"></div>
+      <div class="fb-section">Point Prescription</div><div class="fb-text" id="fb-points"></div>
+      <div class="fb-section">Formula</div><div class="fb-text" id="fb-formula"></div>
+      <div class="fb-section">What to Study Next</div><div class="fb-text" id="fb-study"></div>
+    </div>
+    <button class="btn" onclick="newCase()">🩺 New Case</button>
+  </div>
+</div>
+
+<!-- ══════════════════ LIBRARY ══════════════════ -->
+<div class="sec" id="sec-library">
+  <div class="sec-lbl">Classic TCM cases</div>
+  <input class="ref-search" id="lib-search" placeholder="Search cases..." oninput="filterLibrary()">
+  <div id="library-list"></div>
+</div>
+
+<!-- ══════════════════ STATS ══════════════════ -->
+<div class="sec" id="sec-stats">
+  <div class="sec-lbl">Overview</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val" id="st-cases">0</div><div class="stat-lbl">cases completed</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-avg">—</div><div class="stat-lbl">average score</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-best">—</div><div class="stat-lbl">best score</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-streak">0</div><div class="stat-lbl">day streak 🔥</div></div>
+  </div>
+  <div class="sec-lbl">Score by difficulty</div>
+  <div id="diff-breakdown"></div>
+  <div class="sec-lbl">Areas to strengthen</div>
+  <div id="weak-areas"></div>
+  <div class="sec-lbl">Recent cases</div>
+  <div id="stats-recent"></div>
+</div>
+
+<!-- ══════════════════ REFERENCE ══════════════════ -->
+<div class="sec" id="sec-reference">
+  <input class="ref-search" id="ref-search" placeholder="Search patterns, points, formulas..." oninput="filterRef()">
+  <div id="ref-list"></div>
+</div>
+
+<!-- ══════════════════ HISTORY ══════════════════ -->
+<div class="sec" id="sec-history">
+  <div class="sec-lbl">Completed cases</div>
+  <div id="history-list"></div>
+</div>
+
+<!-- ══════════════════ WHY ══════════════════ -->
+<div class="sec" id="sec-why">
+  <div class="neon-wrap">
+    <div class="neon-border">
+      <span class="neon-kanji">なぜ　·　WHY　·　なぜ</span>
+      <span class="neon-sign">WHY</span>
+      <span class="neon-sub">this might happen to you..</span>
+      <span class="neon-jp">これはあなたに起こるかもしれない</span>
+    </div>
+    <div class="why-img-wrap">
+      <img src="why-placeholder.png" alt="Why this matters">
+    </div>
+    <div class="why-caption">
+      Every patient you'll ever see has a story.<br>
+      Every pattern you learn was someone's suffering.<br>
+      Every point you locate could change someone's life.<br>
+      This is why you study.
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+
+// ═══ JSON EXTRACTOR ═══
+function extractJSON(text){
+  // Try direct parse first
+  try{ JSON.parse(text); return text; }catch(e){}
+  // Strip markdown fences
+  text = text.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+  try{ JSON.parse(text); return text; }catch(e){}
+  // Find first { to last }
+  var start = text.indexOf('{');
+  var end = text.lastIndexOf('}');
+  if(start > -1 && end > start) return text.slice(start, end+1);
+  // Find first [ to last ]
+  start = text.indexOf('[');
+  end = text.lastIndexOf(']');
+  if(start > -1 && end > start) return text.slice(start, end+1);
+  return text;
+}
+function safeParsePatient(text){
+  var raw = extractJSON(text);
+  try{ return JSON.parse(raw); }catch(e){
+    console.error('Parse failed:',text.slice(0,300));
+    return null;
+  }
+}
+
+
+// ═══ API KEY ═══
+function getApiKey(){
+  return localStorage.getItem('jon-api-key')||'';
+}
+function checkApiKey(){
+  if(!getApiKey()){
+    toast('⚠️ No API key — set it in The Dantian → ⚙️ Settings');
+    return false;
+  }
+  return true;
+}
+
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+var DB={cases:[]};
+function save(){localStorage.setItem('wbyi-db',JSON.stringify(DB));}
+function load(){var d=localStorage.getItem('wbyi-db');if(d)DB=JSON.parse(d);}
+
+var state={
+  difficulty:'beginner',
+  focuses:['Internal medicine','Musculoskeletal','Mental-emotional','Gynecology','Digestive','Respiratory'],
+  patient:null,history:[],questionCount:0,
+};
+
+// ═══════════════════════════════════════
+// CASE LIBRARY DATA
+// ═══════════════════════════════════════
+var LIBRARY_CASES = [
+  {name:'The Insomniac Executive',age:48,sex:'Male',cc:'"I haven\'t slept properly in months. My mind just races at night."',pattern:'HT & KD not communicating / HT Blood Deficiency',principle:'Nourish HT Blood, calm Shen, tonify KD, clear deficiency Heat',points:'HT 7, KD 3, SP 6, Yin Tang, An Mian, PC 6',formula:'Tian Wang Bu Xin Dan or Suan Zao Ren Tang',tags:['Internal','Mental-Emotional','Beginner'],difficulty:'beginner'},
+  {name:'The Stressed Graduate Student',age:26,sex:'Female',cc:'"I get headaches almost every day and my periods have become so irregular."',pattern:'LV Qi Stagnation with Blood Deficiency',principle:'Soothe LV Qi, nourish Blood, regulate menstruation',points:'LV 3, SP 6, SP 10, LV 8, PC 6, GB 34',formula:'Xiao Yao San modified',tags:['Gynecology','Internal','Beginner'],difficulty:'beginner'},
+  {name:'The Construction Worker',age:52,sex:'Male',cc:'"My lower back has been killing me for years. Worse in cold weather, better with heat."',pattern:'KD Yang Deficiency with Cold-Damp Bi',principle:'Warm and tonify KD Yang, dispel Cold-Damp, open Bi',points:'KD 3, BL 23, GV 4, BL 40, SP 9, moxa',formula:'Jin Gui Shen Qi Wan',tags:['MSK','Beginner'],difficulty:'beginner'},
+  {name:'The New Mother',age:34,sex:'Female',cc:'"Since having my baby six months ago I\'m exhausted all the time and my hair is falling out."',pattern:'SP & KD Qi Deficiency with Blood Deficiency',principle:'Tonify SP and KD, nourish Blood and Jing',points:'SP 6, ST 36, BL 20, BL 23, KD 3, GV 20',formula:'Ba Zhen Tang modified + Er Zhi Wan',tags:['Gynecology','Internal','Beginner'],difficulty:'beginner'},
+  {name:'The Anxious Accountant',age:39,sex:'Female',cc:'"I have this constant tight feeling in my chest and I worry about everything."',pattern:'LV Qi Stagnation transforming to Heat / PC involvement',principle:'Spread LV Qi, clear Heat, calm Shen, open chest',points:'LV 3, PC 6, HT 7, GB 34, Ren 17, LI 4',formula:'Dan Zhi Xiao Yao San',tags:['Mental-Emotional','Internal','Intermediate'],difficulty:'intermediate'},
+  {name:'The Retired Teacher',age:67,sex:'Female',cc:'"I have hot flashes day and night. I feel dry everywhere and I\'m irritable."',pattern:'KD and LV Yin Deficiency with Deficiency Heat / Liver Yang Rising',principle:'Nourish KD and LV Yin, anchor Yang, clear deficiency Heat',points:'KD 3, LV 3, SP 6, KD 6, Ren 4, HT 6',formula:'Liu Wei Di Huang Wan + Zhi Bai Di Huang Wan',tags:['Gynecology','Internal','Intermediate'],difficulty:'intermediate'},
+  {name:'The Tech Worker',age:31,sex:'Male',cc:'"I have terrible digestion — bloated after every meal, loose stools, and I\'m always tired."',pattern:'SP Qi Deficiency with Damp accumulation',principle:'Tonify SP Qi, transform Damp, regulate Middle Jiao',points:'SP 3, SP 6, ST 36, Ren 12, BL 20, ST 25',formula:'Liu Jun Zi Tang or Shen Ling Bai Zhu San',tags:['Digestive','Beginner'],difficulty:'beginner'},
+  {name:'The Marathon Runner',age:29,sex:'Female',cc:'"I keep getting sick — every cold goes straight to my chest and takes weeks to clear."',pattern:'LU Qi Deficiency with Wei Qi insufficiency',principle:'Tonify LU Qi, strengthen Wei Qi, expel residual pathogen',points:'LU 9, LU 7, ST 36, BL 13, GV 14, Ren 17',formula:'Yu Ping Feng San + modifications',tags:['Respiratory','Intermediate'],difficulty:'intermediate'},
+  {name:'The Chronic Pain Patient',age:55,sex:'Male',cc:'"The pain is everywhere — joints, muscles. It\'s been like this for years. I feel stuck."',pattern:'Blood Stasis with Qi Stagnation / Bi Syndrome',principle:'Move Blood, regulate Qi, open channels, stop pain',points:'SP 10, BL 17, LI 4, LV 3, ashi points, PC 6',formula:'Xue Fu Zhu Yu Tang',tags:['MSK','Internal','Advanced'],difficulty:'advanced'},
+  {name:'The College Student',age:20,sex:'Female',cc:'"I get really bad acne around my chin and jaw every month before my period."',pattern:'LV Qi Stagnation with Damp-Heat in lower Jiao',principle:'Spread LV Qi, clear Damp-Heat, regulate Chong and Ren',points:'LV 3, SP 6, SP 10, LI 11, ST 44, GB 41',formula:'Long Dan Xie Gan Tang modified',tags:['Dermatology','Gynecology','Intermediate'],difficulty:'intermediate'},
+  {name:'The Night Shift Nurse',age:44,sex:'Female',cc:'"I sweat terribly at night and wake up drenched. I\'m always thirsty but never satisfied."',pattern:'KD Yin Deficiency with Deficiency Heat',principle:'Nourish KD Yin, clear deficiency Heat, secure fluids',points:'KD 3, KD 6, SP 6, HT 6, BL 23, Yin Tang',formula:'Zhi Bai Di Huang Wan',tags:['Internal','Intermediate'],difficulty:'intermediate'},
+  {name:'The Toddler\'s Parent',age:36,sex:'Male',cc:'"I\'m so irritable lately. I snap at everyone. And I get this pressure headache behind my eyes."',pattern:'LV Yang Rising with LV Blood Deficiency',principle:'Anchor LV Yang, nourish LV Blood, clear head',points:'LV 3, GB 20, GB 34, LV 8, KD 3, GV 20',formula:'Tian Ma Gou Teng Yin',tags:['Mental-Emotional','Internal','Intermediate'],difficulty:'intermediate'},
+];
+
+// ═══════════════════════════════════════
+// REFERENCE DATA
+// ═══════════════════════════════════════
+var REF_DATA = [
+  // Patterns
+  {cat:'Common Patterns',name:'LV Qi Stagnation',detail:'S&S: hypochondriac distension, mood swings, sighing, irregular periods, wiry pulse, normal or slightly purple tongue. Tx: Xiao Yao San, LV 3 + GB 34 + PC 6'},
+  {cat:'Common Patterns',name:'SP Qi Deficiency',detail:'S&S: fatigue, loose stools, bloating, poor appetite, pale tongue with teeth marks, thin white coat, weak pulse. Tx: Si Jun Zi Tang, ST 36 + SP 6 + BL 20'},
+  {cat:'Common Patterns',name:'KD Yin Deficiency',detail:'S&S: night sweats, dry mouth, tinnitus, low back ache, 5-palm heat, red tongue no coat, thin rapid pulse. Tx: Liu Wei Di Huang Wan, KD 3 + KD 6 + SP 6'},
+  {cat:'Common Patterns',name:'KD Yang Deficiency',detail:'S&S: aversion to cold, cold limbs, frequent pale urine, low back weak, pale moist tongue, deep weak pulse. Tx: Jin Gui Shen Qi Wan, GV 4 + BL 23 + KD 3 moxa'},
+  {cat:'Common Patterns',name:'HT Blood Deficiency',detail:'S&S: palpitations, insomnia, poor memory, anxiety, pale complexion, pale tongue, thin pulse. Tx: Gui Pi Tang, HT 7 + SP 6 + BL 15'},
+  {cat:'Common Patterns',name:'LV Yang Rising',detail:'S&S: headache (temporal/vertex), dizziness, tinnitus, red face, irritability, wiry rapid pulse. Tx: Tian Ma Gou Teng Yin, LV 3 + GB 20 + KD 3'},
+  {cat:'Common Patterns',name:'Phlegm-Heat',detail:'S&S: mental restlessness, insomnia, yellow greasy tongue coat, rapid slippery pulse, expectoration. Tx: Wen Dan Tang, ST 40 + PC 5 + LI 11'},
+  {cat:'Common Patterns',name:'Blood Stasis',detail:'S&S: fixed stabbing pain, purple lips/tongue, choppy pulse, dark complexion. Tx: Xue Fu Zhu Yu Tang, SP 10 + BL 17 + LV 3'},
+  // Key points
+  {cat:'Key Points',name:'ST 36 (Zu San Li)',detail:'He-Sea. Tonifies SP/ST Qi, raises Yang, builds Blood. Master immune and digestive point. Location: 3 cun below ST 35, one finger-breadth lateral to tibia crest.'},
+  {cat:'Key Points',name:'SP 6 (San Yin Jiao)',detail:'Meeting of SP, LV, KD. Tonifies Yin and Blood, calms Shen, regulates lower Jiao, nourishes Liver. Contraindicated in pregnancy. Location: 3 cun above medial malleolus.'},
+  {cat:'Key Points',name:'LV 3 (Tai Chong)',detail:'Yuan-Source. Spreads LV Qi, calms Wind, anchors Yang. With LI 4 = Four Gates — moves Qi and Blood throughout. Location: between 1st and 2nd metatarsals, 2 cun proximal to web.'},
+  {cat:'Key Points',name:'KD 3 (Tai Xi)',detail:'Yuan-Source. Tonifies KD Yin and Yang, strengthens KD Qi. Foundation point for all KD deficiency. Location: between medial malleolus and Achilles tendon.'},
+  {cat:'Key Points',name:'HT 7 (Shen Men)',detail:'Yuan-Source. Calms Shen, tonifies HT Qi and Blood, clears Heart Heat. Primary point for insomnia, anxiety, palpitations. Location: wrist crease, radial side of FCU.'},
+  {cat:'Key Points',name:'PC 6 (Nei Guan)',detail:'Luo, Yin Wei Mai confluent. Opens chest, calms Shen, stops nausea. Master of chest and emotional conditions. Location: 2 cun proximal to wrist crease.'},
+  {cat:'Key Points',name:'GV 20 (Bai Hui)',detail:'Raises Yang, lifts Shen, clears mind. Treats prolapse, headache, dizziness, mental fog. Location: vertex, intersection of ear apex line and midline.'},
+  // Formulas
+  {cat:'Key Formulas',name:'Xiao Yao San',detail:'Pattern: LV Qi Stagnation + SP Deficiency. Ingredients: Chai Hu, Bai Shao, Dang Gui, Bai Zhu, Fu Ling, Gan Cao, Bo He, Sheng Jiang. Actions: spread LV, tonify SP, nourish Blood.'},
+  {cat:'Key Formulas',name:'Liu Wei Di Huang Wan',detail:'Pattern: KD and LV Yin Deficiency. Ingredients: Shu Di Huang, Shan Zhu Yu, Shan Yao, Ze Xie, Mu Dan Pi, Fu Ling. The foundational KD Yin tonic.'},
+  {cat:'Key Formulas',name:'Gui Pi Tang',detail:'Pattern: HT and SP Deficiency, Blood Deficiency. Chief herbs: Ren Shen, Bai Zhu, Fu Ling, Huang Qi, Dang Gui, Suan Zao Ren, Long Yan Rou. Treats insomnia, palpitations, fatigue.'},
+  {cat:'Key Formulas',name:'Si Jun Zi Tang',detail:'Pattern: SP and ST Qi Deficiency. Ingredients: Ren Shen, Bai Zhu, Fu Ling, Zhi Gan Cao. Foundation formula for Qi deficiency — basis of many modifications.'},
+  {cat:'Key Formulas',name:'Tian Wang Bu Xin Dan',detail:'Pattern: HT and KD Yin Deficiency with deficiency Heat. Nourishes Yin, tonifies Blood, calms Shen. For insomnia with night sweats and palpitations.'},
+  {cat:'Key Formulas',name:'Long Dan Xie Gan Tang',detail:'Pattern: LV/GB Damp-Heat. Clears Heat, drains Damp from LV and GB channels. Used for UTI, genital itching, ear infections with Damp-Heat etiology. Use short term only.'},
+];
+
+// ═══════════════════════════════════════
+// UI
+// ═══════════════════════════════════════
+function showSec(id){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});
+  document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if(id==='library') renderLibrary();
+  if(id==='stats') renderStats();
+  if(id==='reference') renderRef();
+  if(id==='history') renderHistory();
+}
+function toggleTheme(){
+  var t=document.documentElement.getAttribute('data-theme');
+  var n=t==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',n);
+  document.getElementById('theme-btn').textContent=n==='dark'?'☀️':'🌙';
+  localStorage.setItem('wbyi-theme',n);
+}
+function toast(msg){
+  var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show')},2400);
+}
+function setDiff(d,el){
+  state.difficulty=d;
+  document.querySelectorAll('.diff-btn').forEach(function(b){b.classList.remove('active')});
+  el.classList.add('active');
+}
+function toggleFocus(f,el){
+  var i=state.focuses.indexOf(f);
+  if(i>-1) state.focuses.splice(i,1); else state.focuses.push(f);
+  el.classList.toggle('active',state.focuses.indexOf(f)>-1);
+}
+
+// ═══════════════════════════════════════
+// GENERATE CASE
+// ═══════════════════════════════════════
+async function generateCase(){
+  if(!checkApiKey()) return;
+  var spinner=document.getElementById('gen-case-spinner');
+  spinner.style.display='inline-block';
+  var custom=document.getElementById('custom-scenario').value.trim();
+  var focuses=state.focuses.length>0?state.focuses.join(', '):'any area';
+  var caseDesc=custom?'Based on this scenario: '+custom:'Difficulty: '+state.difficulty+'. Focus areas: '+focuses+'.';
+  var prompt='Generate a TCM patient case. '+caseDesc+'\n\nRespond with ONLY this JSON, no other text:\n{"name":"","age":0,"sex":"","occupation":"","chiefComplaint":"","hiddenPattern":"","hiddenPrinciple":"","hiddenPoints":"","hiddenFormula":"","personality":"","backstory":""}';
+  var sysPrompt='You are a TCM clinical case generator. You output ONLY valid JSON. No preamble, no explanation, no markdown fences. Every response is a single JSON object with exactly these keys: name, age, sex, occupation, chiefComplaint, hiddenPattern, hiddenPrinciple, hiddenPoints, hiddenFormula, personality, backstory.';
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:sysPrompt,messages:[{role:'user',content:prompt}]})});
+    var data=await resp.json();
+    if(data.error){toast('API error: '+data.error.message);spinner.style.display='none';return;}
+    if(!data.content||!data.content[0]){toast('No content: '+JSON.stringify(data).slice(0,120));spinner.style.display='none';return;}
+    var text=data.content[0].text.trim();
+    state.patient=safeParsePatient(text);
+    if(!state.patient){toast('Parse fail: '+text.slice(0,80));spinner.style.display='none';return;}
+    // Normalize field names — handle every possible variant Claude might return
+    var p=state.patient;
+    // Chief complaint — most critical field
+    p.chiefComplaint=p.chiefComplaint||p.chief_complaint||p.complaint||
+      p.presenting_complaint||p.presentingComplaint||p.cc||p.main_complaint||
+      p.mainComplaint||p.reason||p.reason_for_visit||p.reasonForVisit||
+      p.symptoms||p.chief||'Not feeling well lately.';
+    p.hiddenPattern=p.hiddenPattern||p.hidden_pattern||p.pattern||
+      p.tcm_pattern||p.tcmPattern||p.diagnosis||p.tcm_diagnosis||'';
+    p.hiddenPoints=p.hiddenPoints||p.hidden_points||p.points||
+      p.acupoints||p.point_prescription||p.acupuncture_points||'';
+    p.hiddenFormula=p.hiddenFormula||p.hidden_formula||p.formula||
+      p.herbal_formula||p.herbs||p.herbal_prescription||'';
+    p.hiddenPrinciple=p.hiddenPrinciple||p.hidden_principle||p.principle||
+      p.treatment_principle||p.tx_principle||'';
+    p.personality=p.personality||p.character||p.demeanor||'realistic patient';
+    p.backstory=p.backstory||p.background||p.history||p.social_history||'';
+    p.occupation=p.occupation||p.job||p.work||p.profession||'';
+    state.history=[];state.questionCount=0;
+    launchInterview();
+  }catch(e){toast('Error: '+e.message);console.error(e);}
+  spinner.style.display='none';
+}
+
+function surpriseCase(){
+  document.getElementById('custom-scenario').value='';
+  var diffs=['beginner','intermediate','advanced','boards'];
+  state.difficulty=diffs[Math.floor(Math.random()*diffs.length)];
+  document.querySelectorAll('.diff-btn').forEach(function(b){b.classList.toggle('active',b.textContent.toLowerCase().includes(state.difficulty))});
+  generateCase();
+}
+
+function launchFromLibrary(idx){
+  var c=LIBRARY_CASES[idx];
+  state.patient={name:c.name,age:c.age,sex:c.sex,occupation:'',chiefComplaint:c.cc.replace(/"/g,''),hiddenPattern:c.pattern,hiddenPoints:c.points,hiddenFormula:c.formula,hiddenPrinciple:c.principle,personality:'realistic patient',backstory:'Classic '+c.tags[0].toLowerCase()+' case.'};
+  state.history=[];state.questionCount=0;state.difficulty=c.difficulty;
+  launchInterview();
+}
+
+function launchInterview(){
+  var pt=state.patient;
+  document.getElementById('pt-name').textContent=pt.name+', '+pt.age;
+  document.getElementById('pt-meta').textContent=pt.sex+(pt.occupation?' · '+pt.occupation:'');
+  document.getElementById('pt-cc').textContent='"'+pt.chiefComplaint+'"';
+  state.history=[{role:'system',content:'Patient: '+pt.name+', '+pt.age+', '+pt.sex+'. CC: '+pt.chiefComplaint+'. Personality: '+pt.personality+'. Backstory: '+pt.backstory+'. Hidden TCM pattern: '+pt.hiddenPattern+'. Respond as this patient — realistic, occasionally vague or emotional. Never reveal pattern directly.'}];
+  var cw=document.getElementById('chat-wrap');cw.innerHTML='';
+  addBubble('system','Patient ready. Begin your intake.');
+  addBubble('patient','"'+pt.chiefComplaint+'"');
+  document.getElementById('feedback-wrap').style.display='none';
+  document.getElementById('dx-principle').value='';
+  document.getElementById('dx-points').value='';
+  document.getElementById('dx-formula').value='';
+  document.getElementById('custom-pattern').value='';
+  document.querySelectorAll('.dx-chip').forEach(function(c){c.classList.remove('sel')});
+  updateQCount();
+  document.getElementById('pill-interview').style.display='';
+  showSecDirect('interview');
+}
+
+function showSecDirect(id){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});
+  document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('sec-'+id).classList.add('active');
+  var map={setup:0,interview:1,library:2,stats:3,reference:4,history:5,why:6};
+  var pills=document.querySelectorAll('.pill');
+  if(pills[map[id]]) pills[map[id]].classList.add('active');
+}
+
+function addBubble(role,text){
+  var wrap=document.getElementById('chat-wrap');
+  var div=document.createElement('div');div.className='bubble '+role;div.textContent=text;
+  wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;
+}
+
+function quickAsk(q){document.getElementById('ask-field').value=q;sendQuestion();}
+function updateQCount(){
+  var n=state.history.filter(function(m){return m.role==='user'}).length;
+  document.getElementById('q-count').textContent=n>0?'('+n+' questions)':'';
+}
+
+async function sendQuestion(){
+  if(!checkApiKey()) return;
+  var field=document.getElementById('ask-field');
+  var q=field.value.trim();if(!q||!state.patient)return;
+  field.value='';addBubble('student',q);
+  state.history.push({role:'user',content:q});state.questionCount++;updateQCount();
+  var loadDiv=document.createElement('div');loadDiv.className='bubble patient';
+  loadDiv.innerHTML='<span class="spinner"></span>';
+  document.getElementById('chat-wrap').appendChild(loadDiv);
+  document.getElementById('chat-wrap').scrollTop=99999;
+  try{
+    var msgs=state.history.filter(function(m){return m.role!=='system'});
+    var sys=state.history[0].content;
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:300,system:sys+'\n\nRespond as this patient. 1-3 sentences. Natural language, not clinical.',messages:msgs})});
+    var data=await resp.json();
+    var ans=data.content[0].text.trim();
+    state.history.push({role:'assistant',content:ans});
+    loadDiv.textContent='"'+ans+'"';
+  }catch(e){loadDiv.textContent='(Connection error)';}
+  document.getElementById('chat-wrap').scrollTop=99999;
+}
+
+async function submitDiagnosis(){
+  if(!checkApiKey()) return;
+  if(!state.patient){toast('Generate a case first');return;}
+  var patterns=Array.from(document.querySelectorAll('.dx-chip.sel')).map(function(c){return c.textContent});
+  var custom=document.getElementById('custom-pattern').value.trim();
+  if(custom) patterns.push(custom);
+  var principle=document.getElementById('dx-principle').value.trim();
+  var points=document.getElementById('dx-points').value.trim();
+  var formula=document.getElementById('dx-formula').value.trim();
+  if(!patterns.length&&!principle){toast('Add your diagnosis first');return;}
+  var spinner=document.getElementById('submit-spinner');spinner.style.display='inline-block';
+  var conv=state.history.filter(function(m){return m.role==='user'||m.role==='assistant'}).map(function(m){return(m.role==='user'?'Student: ':'Patient: ')+m.content}).join('\n');
+  var prompt='Patient: '+state.patient.name+', '+state.patient.age+'. CC: '+state.patient.chiefComplaint+'\nConversation:\n'+conv+'\nStudent Dx: Patterns: '+patterns.join(', ')+' | Principle: '+principle+' | Points: '+points+' | Formula: '+formula+'\nActual: Pattern: '+state.patient.hiddenPattern+' | Principle: '+state.patient.hiddenPrinciple+' | Points: '+state.patient.hiddenPoints+' | Formula: '+state.patient.hiddenFormula+'\n\nReturn ONLY JSON: {score(0-100), grade(string), patternFeedback, principleFeedback, pointsFeedback, formulaFeedback, studyNext}. No markdown.';
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:'You are an experienced TCM clinical supervisor giving constructive feedback to a DAcHM student.',messages:[{role:'user',content:prompt}]})});
+    var data=await resp.json();
+    var text=data.content[0].text.trim();
+    var fb=JSON.parse(extractJSON(text));
+    document.getElementById('fb-score').textContent=fb.score+'/100';
+    document.getElementById('fb-score').style.color=fb.score>=80?'var(--teal)':fb.score>=60?'var(--gold)':'var(--pur2)';
+    document.getElementById('fb-grade').textContent=fb.grade;
+    document.getElementById('fb-pattern').textContent=fb.patternFeedback;
+    document.getElementById('fb-principle').textContent=fb.principleFeedback;
+    document.getElementById('fb-points').textContent=fb.pointsFeedback;
+    document.getElementById('fb-formula').textContent=fb.formulaFeedback;
+    document.getElementById('fb-study').textContent=fb.studyNext;
+    document.getElementById('feedback-wrap').style.display='block';
+    document.getElementById('feedback-wrap').scrollIntoView({behavior:'smooth'});
+    DB.cases.unshift({date:new Date().toISOString().slice(0,10),name:state.patient.name,age:state.patient.age,difficulty:state.difficulty,cc:state.patient.chiefComplaint,pattern:state.patient.hiddenPattern,studentPattern:patterns.join(', '),score:fb.score,grade:fb.grade,studyNext:fb.studyNext});
+    save();
+  }catch(e){toast('Feedback failed — check connection');}
+  spinner.style.display='none';
+}
+
+function newCase(){state.patient=null;document.getElementById('pill-interview').style.display='none';showSecDirect('setup');}
+
+// ═══════════════════════════════════════
+// LIBRARY
+// ═══════════════════════════════════════
+function renderLibrary(filter){
+  var el=document.getElementById('library-list');
+  var cases=filter?LIBRARY_CASES.filter(function(c){
+    var q=filter.toLowerCase();
+    return c.name.toLowerCase().includes(q)||c.pattern.toLowerCase().includes(q)||c.tags.join(' ').toLowerCase().includes(q)||c.cc.toLowerCase().includes(q);
+  }):LIBRARY_CASES;
+  el.innerHTML=cases.map(function(c,i){
+    var realIdx=LIBRARY_CASES.indexOf(c);
+    var diffColors={beginner:'var(--teal)',intermediate:'var(--gold)',advanced:'var(--pur2)',boards:'#e06050'};
+    return '<div class="lib-case" onclick="launchFromLibrary('+realIdx+')">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.25rem">'
+      +'<div class="lib-case-name">'+c.name+', '+c.age+'</div>'
+      +'<div style="font-size:10px;font-weight:700;color:'+diffColors[c.difficulty]+';text-transform:uppercase">'+c.difficulty+'</div></div>'
+      +'<div class="lib-case-cc">'+c.cc+'</div>'
+      +'<div class="lib-case-tags">'+c.tags.map(function(t,ti){return '<span class="lib-tag'+(ti===0?' teal':'')+'">'+t+'</span>'}).join('')+'</div>'
+      +'</div>';
+  }).join('');
+  if(!cases.length) el.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--tx3);font-size:13px">No cases match your search.</div>';
+}
+function filterLibrary(){renderLibrary(document.getElementById('lib-search').value);}
+
+// ═══════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════
+function renderStats(){
+  var el=document.getElementById;
+  if(!DB.cases.length){
+    ['st-cases','st-avg','st-best','st-streak'].forEach(function(id){document.getElementById(id).textContent=id==='st-cases'?'0':'—';});
+    document.getElementById('diff-breakdown').innerHTML='<div class="card" style="text-align:center;color:var(--tx3);font-size:13px;padding:1.25rem">Complete cases to see your stats.</div>';
+    document.getElementById('weak-areas').innerHTML='';
+    document.getElementById('stats-recent').innerHTML='';
+    return;
+  }
+  var scores=DB.cases.map(function(c){return c.score});
+  var avg=Math.round(scores.reduce(function(a,b){return a+b},0)/scores.length);
+  var best=Math.max.apply(null,scores);
+  document.getElementById('st-cases').textContent=DB.cases.length;
+  document.getElementById('st-avg').textContent=avg;
+  document.getElementById('st-best').textContent=best;
+
+  // streak
+  var dates=[...new Set(DB.cases.map(function(c){return c.date}))].sort().reverse();
+  var streak=0;for(var i=0;i<60;i++){var d=new Date();d.setDate(d.getDate()-i);var ds=d.toISOString().slice(0,10);if(dates.indexOf(ds)>-1)streak++;else break;}
+  document.getElementById('st-streak').textContent=streak;
+
+  // by difficulty
+  var diffs=['beginner','intermediate','advanced','boards'];
+  var diffColors={beginner:'var(--teal)',intermediate:'var(--gold)',advanced:'var(--pur2)',boards:'#e06050'};
+  document.getElementById('diff-breakdown').innerHTML=diffs.map(function(d){
+    var dc=DB.cases.filter(function(c){return c.difficulty===d});
+    if(!dc.length) return '';
+    var davg=Math.round(dc.reduce(function(a,b){return a+b.score},0)/dc.length);
+    return '<div class="weak-item"><div><div class="weak-name" style="text-transform:capitalize">'+d+'</div><div class="score-bar"><div class="score-bar-fill" style="width:'+davg+'%;background:'+diffColors[d]+'"></div></div></div><div class="weak-score" style="color:'+diffColors[d]+'">'+davg+' avg</div></div>';
+  }).join('');
+
+  // study next
+  var studyTopics={};
+  DB.cases.forEach(function(c){if(c.studyNext&&c.score<75)studyTopics[c.studyNext]=(studyTopics[c.studyNext]||0)+1;});
+  var sorted=Object.keys(studyTopics).sort(function(a,b){return studyTopics[b]-studyTopics[a]}).slice(0,4);
+  document.getElementById('weak-areas').innerHTML=sorted.length?sorted.map(function(t){
+    return '<div class="card" style="padding:.75rem 1rem;font-size:13px;color:var(--tx2)">📌 '+t+'</div>';
+  }).join(''):'<div class="card" style="text-align:center;color:var(--tx3);font-size:13px;padding:.85rem">Strong across all areas so far!</div>';
+
+  // recent
+  document.getElementById('stats-recent').innerHTML=DB.cases.slice(0,5).map(function(c){
+    var sc=c.score>=80?'var(--teal)':c.score>=60?'var(--gold)':'var(--pur2)';
+    return '<div class="weak-item"><div class="weak-name">'+c.name+'</div><div class="weak-score" style="color:'+sc+'">'+c.score+'/100</div></div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// REFERENCE
+// ═══════════════════════════════════════
+function renderRef(filter){
+  var el=document.getElementById('ref-list');
+  var items=filter?REF_DATA.filter(function(r){
+    var q=filter.toLowerCase();
+    return r.name.toLowerCase().includes(q)||r.detail.toLowerCase().includes(q)||r.cat.toLowerCase().includes(q);
+  }):REF_DATA;
+  var cats=[...new Set(items.map(function(r){return r.cat}))];
+  el.innerHTML=cats.map(function(cat){
+    var catItems=items.filter(function(r){return r.cat===cat});
+    return '<div class="ref-cat">'+cat+'</div>'
+      +catItems.map(function(r){
+        return '<div class="ref-item"><div class="ref-name">'+r.name+'</div><div class="ref-detail">'+r.detail+'</div></div>';
+      }).join('');
+  }).join('');
+  if(!items.length) el.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--tx3);font-size:13px">No results.</div>';
+}
+function filterRef(){renderRef(document.getElementById('ref-search').value);}
+
+// ═══════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════
+function renderHistory(){
+  var el=document.getElementById('history-list');
+  if(!DB.cases.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--tx3);font-size:13px">No cases completed yet.</div>';return;}
+  var avg=Math.round(DB.cases.reduce(function(a,b){return a+b.score},0)/DB.cases.length);
+  el.innerHTML='<div class="card" style="text-align:center;margin-bottom:.65rem"><div style="font-family:DM Serif Display,serif;font-size:32px;color:var(--pur2)">'+avg+'</div><div style="font-size:11px;color:var(--tx3)">average score · '+DB.cases.length+' cases</div></div>'
+    +DB.cases.map(function(c){
+      var sc=c.score>=80?'var(--teal)':c.score>=60?'var(--gold)':'var(--pur2)';
+      var ds=new Date(c.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      return '<div class="lib-case"><div style="display:flex;justify-content:space-between"><div class="lib-case-name">'+c.name+'</div><div style="font-size:13px;font-weight:700;color:'+sc+'">'+c.score+'/100</div></div>'
+        +'<div class="lib-case-cc">Actual: '+c.pattern+'</div>'
+        +'<div class="lib-case-cc">Your Dx: '+c.studentPattern+'</div>'
+        +'<div style="font-size:10px;color:var(--tx3);margin-top:.2rem">'+c.difficulty+' · '+ds+'</div>'
+        +'</div>';
+    }).join('');
+}
+
+// ═══════════════════════════════════════
+// WHY TAB
+// ═══════════════════════════════════════
+// why tab — static image, upload directly to repo
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+load();
+var savedTheme=localStorage.getItem('wbyi-theme')||'dark';
+document.documentElement.setAttribute('data-theme',savedTheme);
+document.getElementById('theme-btn').textContent=savedTheme==='dark'?'☀️':'🌙';
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('/what-brings-you-in/sw.js',{scope:'/what-brings-you-in/'})
+      .then(function(r){console.log('SW',r.scope)}).catch(function(e){console.log(e)});
+  });
+}
+</script>
+</body>
+</html>
