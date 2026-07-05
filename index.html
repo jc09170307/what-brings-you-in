@@ -508,11 +508,12 @@ async function generateCase(){
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:'You are a TCM clinical education expert generating realistic patient cases.',messages:[{role:'user',content:prompt}]})});
     var data=await resp.json();
+    if(data.error){toast('API: '+data.error.message);spinner.style.display='none';return;}
     var text=data.content[0].text.trim().replace(/```json|```/g,'').trim();
     state.patient=JSON.parse(text);
     state.history=[];state.questionCount=0;
     launchInterview();
-  }catch(e){toast('Generation failed — check connection');}
+  }catch(e){toast('Error: '+e.message);console.error(e);}
   spinner.style.display='none';
 }
 
