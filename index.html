@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="What Brings You In">
+<meta name="theme-color" content="#7c5cbf">
+<title>What Brings You In 🩺</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+button,input,textarea,select{font-family:inherit;-webkit-appearance:none;appearance:none}
+:root{
+  --pur:#7c5cbf;--pur2:#9b7dd4;--purL:#2a1f4a;
+  --teal:#12a37a;--teal2:#0d7a5c;--tealL:#082d1c;
+  --gold:#c9973a;--goldL:#3a2a0a;
+  --bg:#0d0f1a;--bg2:#12141f;--bg3:#1a1d2e;--bg4:#20233a;
+  --tx:#e8e6f0;--tx2:#a8a4c0;--tx3:#5a5870;
+  --bd:rgba(124,92,191,.15);--bd2:rgba(255,255,255,.06);
+  --card:#12141f;--nav:#0d0f1a;
+}
+[data-theme="light"]{
+  --bg:#f4f2fc;--bg2:#fff;--bg3:#ede9f8;--bg4:#e4dff5;
+  --tx:#1a1730;--tx2:#4a4670;--tx3:#9090b0;
+  --bd:rgba(124,92,191,.2);--bd2:rgba(0,0,0,.06);
+  --card:#fff;--nav:#f4f2fc;--purL:#ede9f8;--tealL:#e1f5ee;
+}
+html,body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body{padding-bottom:4rem}
+.hdr{padding:.85rem 1rem .75rem;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;background:var(--bg);position:sticky;top:0;z-index:200}
+.hdr-brand{font-family:'DM Serif Display',serif;font-size:17px;color:var(--pur2)}
+.hdr-brand em{color:var(--gold);font-style:italic}
+.theme-btn{background:var(--bg3);border:none;border-radius:20px;padding:5px 10px;font-size:13px;cursor:pointer;color:var(--tx2)}
+.nav-wrap{position:sticky;top:49px;z-index:100;background:var(--nav);border-bottom:1px solid var(--bd);overflow-x:auto;scrollbar-width:none}
+.nav-wrap::-webkit-scrollbar{display:none}
+.nav-inner{display:flex;gap:4px;padding:.4rem .75rem;width:max-content}
+.pill{font-size:11.5px;padding:5px 14px;border:1px solid var(--bd2);border-radius:100px;background:var(--bg3);cursor:pointer;color:var(--tx2);white-space:nowrap;font-weight:500;transition:all .12s}
+.pill.active{background:var(--pur);color:#fff;border-color:var(--pur);font-weight:600}
+.sec{padding:.75rem 1rem 3rem;display:none}
+.sec.active{display:block}
+.sec-lbl{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;padding:.6rem 0 .4rem}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:1rem 1.1rem;margin-bottom:.6rem}
+.field{width:100%;border:1.5px solid var(--bd2);border-radius:10px;padding:.6rem .8rem;font-size:14px;background:var(--bg3);color:var(--tx);margin-bottom:.5rem;resize:vertical;outline:none;transition:border .15s;font-family:'DM Sans',sans-serif}
+.field:focus{border-color:var(--pur)}
+.field-lbl{font-size:11px;color:var(--tx3);margin-bottom:.25rem;font-weight:500;display:block}
+.btn{width:100%;padding:12px;background:var(--pur);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:14px;font-weight:600;transition:opacity .12s;font-family:'DM Sans',sans-serif;margin-bottom:.4rem}
+.btn:active{opacity:.82}
+.btn.sec-btn{background:var(--bg3);color:var(--tx2);border:1px solid var(--bd2)}
+.btn.teal{background:var(--teal)}
+.btn-row{display:flex;gap:.5rem;margin-bottom:.5rem}
+.btn-row .btn{flex:1;margin:0}
+
+/* CASE SETUP */
+.difficulty-row{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.65rem}
+.diff-btn{flex:1;min-width:70px;padding:.55rem .4rem;border:1.5px solid var(--bd2);border-radius:10px;background:var(--bg3);color:var(--tx3);font-size:11px;font-weight:600;cursor:pointer;text-align:center;transition:all .12s}
+.diff-btn.active{border-color:var(--pur);color:var(--pur2);background:var(--purL)}
+
+.focus-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.65rem}
+.focus-btn{padding:.6rem .5rem;border:1.5px solid var(--bd2);border-radius:12px;background:var(--bg3);color:var(--tx2);font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .12s}
+.focus-btn.active{border-color:var(--teal);color:var(--teal);background:var(--tealL)}
+
+/* INTERVIEW */
+.patient-card{background:linear-gradient(135deg,#100f20,#0d1530);border:1px solid var(--bd);border-radius:20px;padding:1.25rem;margin:.5rem 0 .85rem}
+.patient-name{font-family:'DM Serif Display',serif;font-size:22px;color:var(--pur2);margin-bottom:.2rem}
+.patient-meta{font-size:12px;color:var(--tx3);margin-bottom:.75rem}
+.patient-cc{font-size:14px;color:var(--tx2);line-height:1.6;font-style:italic}
+.patient-cc-lbl{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+
+.chat-wrap{display:flex;flex-direction:column;gap:.5rem;margin:.5rem 0;max-height:340px;overflow-y:auto;padding:.25rem 0}
+.bubble{max-width:88%;padding:.65rem .85rem;border-radius:16px;font-size:13px;line-height:1.6}
+.bubble.patient{background:var(--bg3);color:var(--tx2);border:1px solid var(--bd2);align-self:flex-start;border-bottom-left-radius:4px}
+.bubble.student{background:var(--pur);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.bubble.system{background:var(--goldL);color:var(--gold);border:1px solid rgba(201,151,58,.2);align-self:center;font-size:11px;font-style:italic;text-align:center;border-radius:20px;padding:.35rem .85rem}
+
+.ask-row{display:flex;gap:.5rem;align-items:flex-end;margin-top:.5rem}
+.ask-field{flex:1;border:1.5px solid var(--bd2);border-radius:12px;padding:.6rem .8rem;font-size:13px;background:var(--bg3);color:var(--tx);outline:none;resize:none;transition:border .15s;font-family:'DM Sans',sans-serif;max-height:80px}
+.ask-field:focus{border-color:var(--pur)}
+.ask-btn{width:44px;height:44px;border-radius:12px;border:none;background:var(--pur);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+
+.quick-asks{display:flex;gap:.3rem;flex-wrap:wrap;margin:.4rem 0}
+.qa-btn{font-size:11px;padding:4px 10px;border:1px solid var(--bd2);border-radius:20px;background:var(--bg3);color:var(--tx3);cursor:pointer;transition:all .12s}
+.qa-btn:active{border-color:var(--pur);color:var(--pur2)}
+
+/* DIAGNOSIS PANEL */
+.dx-panel{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:1rem 1.1rem;margin:.5rem 0}
+.dx-section{font-size:10px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin:.5rem 0 .25rem}
+.dx-chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.4rem}
+.dx-chip{font-size:12px;padding:4px 11px;border:1.5px solid var(--bd2);border-radius:20px;cursor:pointer;background:var(--bg3);color:var(--tx2);transition:all .12s}
+.dx-chip.sel{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+/* FEEDBACK */
+.feedback-box{background:var(--bg3);border:1px solid var(--bd);border-radius:16px;padding:1rem 1.1rem;margin:.5rem 0}
+.fb-score{font-family:'DM Serif Display',serif;font-size:48px;text-align:center;line-height:1}
+.fb-grade{font-size:13px;color:var(--tx3);text-align:center;margin-top:.2rem;margin-bottom:.75rem}
+.fb-section{font-size:11px;font-weight:700;color:var(--pur2);margin:.5rem 0 .2rem;text-transform:uppercase;letter-spacing:.06em}
+.fb-text{font-size:13px;color:var(--tx2);line-height:1.65}
+
+/* HISTORY */
+.case-entry{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:.85rem 1rem;margin-bottom:.45rem}
+.ce-name{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:.2rem}
+.ce-meta{font-size:11px;color:var(--tx3)}
+.ce-score{font-size:13px;font-weight:700;color:var(--pur2)}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--bd2);border-top-color:var(--pur2);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.3rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg2);border:1px solid var(--pur);border-radius:20px;padding:.5rem 1.1rem;font-size:13px;color:var(--tx);z-index:9999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-brand">What Brings You In <em>🩺</em></div>
+  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">☀️</button>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-inner">
+    <button class="pill active" onclick="showSec('setup')">📋 New Case</button>
+    <button class="pill" onclick="showSec('interview')" id="pill-interview" style="display:none">🗣 Interview</button>
+    <button class="pill" onclick="showSec('history')">📜 History</button>
+    <button class="pill" onclick="showSec('why')">⚠️ Why</button>
+  </div>
+</div>
+
+<!-- ══════════════════ SETUP ══════════════════ -->
+<div class="sec active" id="sec-setup">
+  <div class="sec-lbl">Difficulty</div>
+  <div class="difficulty-row">
+    <button class="diff-btn active" onclick="setDiff('beginner',this)">🌱 Beginner</button>
+    <button class="diff-btn" onclick="setDiff('intermediate',this)">🔥 Intermediate</button>
+    <button class="diff-btn" onclick="setDiff('advanced',this)">⚡ Advanced</button>
+    <button class="diff-btn" onclick="setDiff('boards',this)">🎓 Boards</button>
+  </div>
+
+  <div class="sec-lbl">Clinical focus</div>
+  <div class="focus-grid">
+    <button class="focus-btn active" onclick="toggleFocus('Internal medicine',this)">🫀 Internal</button>
+    <button class="focus-btn active" onclick="toggleFocus('Musculoskeletal',this)">🦴 MSK</button>
+    <button class="focus-btn active" onclick="toggleFocus('Mental-emotional',this)">🧠 Mental-Emotional</button>
+    <button class="focus-btn active" onclick="toggleFocus('Gynecology',this)">🌸 Gynecology</button>
+    <button class="focus-btn active" onclick="toggleFocus('Digestive',this)">🌀 Digestive</button>
+    <button class="focus-btn active" onclick="toggleFocus('Respiratory',this)">🫁 Respiratory</button>
+    <button class="focus-btn" onclick="toggleFocus('Dermatology',this)">✨ Dermatology</button>
+    <button class="focus-btn" onclick="toggleFocus('Pediatrics',this)">👶 Pediatrics</button>
+  </div>
+
+  <div class="sec-lbl">Custom scenario (optional)</div>
+  <textarea class="field" id="custom-scenario" rows="2" placeholder="e.g. 45-year-old woman with chronic insomnia and palpitations..."></textarea>
+
+  <button class="btn" onclick="generateCase()"><span id="gen-case-spinner" style="display:none" class="spinner"></span>🩺 Generate Patient Case</button>
+  <button class="btn sec-btn" onclick="surpriseCase()">🎲 Surprise Me</button>
+</div>
+
+<!-- ══════════════════ INTERVIEW ══════════════════ -->
+<div class="sec" id="sec-interview">
+
+  <div class="patient-card" id="patient-card">
+    <div class="patient-name" id="pt-name">Loading...</div>
+    <div class="patient-meta" id="pt-meta"></div>
+    <div class="patient-cc-lbl">Chief Complaint</div>
+    <div class="patient-cc" id="pt-cc"></div>
+  </div>
+
+  <div class="sec-lbl">Interview <span id="q-count" style="color:var(--pur2);font-size:11px"></span></div>
+  <div class="quick-asks">
+    <button class="qa-btn" onclick="quickAsk('How long has this been going on?')">⏱ Duration</button>
+    <button class="qa-btn" onclick="quickAsk('What makes it worse or better?')">↕️ Mod. factors</button>
+    <button class="qa-btn" onclick="quickAsk('How is your sleep?')">🌙 Sleep</button>
+    <button class="qa-btn" onclick="quickAsk('How is your digestion and appetite?')">🍽 Digestion</button>
+    <button class="qa-btn" onclick="quickAsk('How are your energy levels?')">⚡ Energy</button>
+    <button class="qa-btn" onclick="quickAsk('How are you feeling emotionally?')">💭 Emotions</button>
+    <button class="qa-btn" onclick="quickAsk('Tell me about your thirst and fluid intake.')">💧 Thirst</button>
+    <button class="qa-btn" onclick="quickAsk('Any changes in urination or bowel movements?')">🚽 Elimination</button>
+    <button class="qa-btn" onclick="quickAsk('Are you warm or cold generally?')">🌡 Temp</button>
+    <button class="qa-btn" onclick="quickAsk('Describe your tongue and pulse if you know.')">👅 T&P</button>
+  </div>
+
+  <div class="chat-wrap" id="chat-wrap"></div>
+
+  <div class="ask-row">
+    <textarea class="ask-field" id="ask-field" rows="1" placeholder="Ask the patient anything..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendQuestion()}"></textarea>
+    <button class="ask-btn" onclick="sendQuestion()">↑</button>
+  </div>
+
+  <!-- DIAGNOSIS -->
+  <div class="dx-panel">
+    <div class="sec-lbl" style="padding-top:0">Your Diagnosis</div>
+
+    <div class="dx-section">TCM Pattern(s)</div>
+    <div class="dx-chips" id="dx-patterns">
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">LV Qi Stagnation</button>
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">HT Blood Deficiency</button>
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">KD Yin Deficiency</button>
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">SP Qi Deficiency</button>
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">LV/KD Yin Deficiency</button>
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">Phlegm-Heat</button>
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">Blood Stasis</button>
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">KD Yang Deficiency</button>
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">Damp-Heat</button>
+      <button class="dx-chip" onclick="toggleDx(this,'pattern')">Wind-Cold</button>
+    </div>
+    <input class="field" id="custom-pattern" placeholder="Or type your own pattern..." style="margin-bottom:.5rem">
+
+    <div class="dx-section">Treatment Principle</div>
+    <textarea class="field" id="dx-principle" rows="2" placeholder="e.g. Soothe LV, tonify HT Blood, calm Shen..."></textarea>
+
+    <div class="dx-section">Point Prescription (key points)</div>
+    <textarea class="field" id="dx-points" rows="2" placeholder="e.g. LV 3, HT 7, PC 6, SP 6, Yin Tang..."></textarea>
+
+    <div class="dx-section">Formula / Herbs</div>
+    <textarea class="field" id="dx-formula" rows="2" placeholder="e.g. Xiao Yao San modified, add Suan Zao Ren..."></textarea>
+
+    <button class="btn teal" onclick="submitDiagnosis()"><span id="submit-spinner" style="display:none" class="spinner"></span>✅ Submit & Get Feedback</button>
+  </div>
+
+  <!-- FEEDBACK -->
+  <div id="feedback-wrap" style="display:none">
+    <div class="sec-lbl">Clinical Feedback</div>
+    <div class="feedback-box">
+      <div class="fb-score" id="fb-score">—</div>
+      <div class="fb-grade" id="fb-grade"></div>
+      <div class="fb-section">Pattern Assessment</div>
+      <div class="fb-text" id="fb-pattern"></div>
+      <div class="fb-section">Treatment Principle</div>
+      <div class="fb-text" id="fb-principle"></div>
+      <div class="fb-section">Point Prescription</div>
+      <div class="fb-text" id="fb-points"></div>
+      <div class="fb-section">Formula</div>
+      <div class="fb-text" id="fb-formula"></div>
+      <div class="fb-section">What to Study Next</div>
+      <div class="fb-text" id="fb-study"></div>
+    </div>
+    <button class="btn" onclick="newCase()">🩺 New Case</button>
+  </div>
+</div>
+
+<!-- ══════════════════ HISTORY ══════════════════ -->
+<div class="sec" id="sec-history">
+  <div class="sec-lbl">Completed cases</div>
+  <div id="history-list"><div style="text-align:center;padding:2rem;color:var(--tx3);font-size:13px">No cases completed yet.</div></div>
+</div>
+
+
+<!-- ══════════════════ WHY ══════════════════ -->
+<div class="sec" id="sec-why">
+  <div class="neon-wrap">
+    <div class="neon-border">
+      <span class="neon-sign">⚠ Why</span>
+      <span class="neon-sub">this might happen to you..</span>
+    </div>
+
+    <div class="why-img-placeholder" id="why-img-wrap">
+      <input type="file" accept="image/*" onchange="handleWhyPhoto(this)">
+      <img id="why-img-preview" src="why-placeholder.png" alt="Why image" style="display:block;width:100%;height:100%;object-fit:cover;border-radius:14px">
+      <div id="why-upload-content" style="display:none">
+        <div class="why-upload-icon">🖼️</div>
+        <div class="why-upload-lbl">Tap to add your image</div>
+      </div>
+    </div>
+
+    <div class="why-caption">
+      Every patient you'll ever see has a story.<br>
+      Every pattern you learn was someone's suffering.<br>
+      This is why you study.
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+var DB={cases:[]};
+function save(){localStorage.setItem('wbyi-db',JSON.stringify(DB));}
+function load(){var d=localStorage.getItem('wbyi-db');if(d)DB=JSON.parse(d);}
+
+var state={
+  difficulty:'beginner',
+  focuses:['Internal medicine','Musculoskeletal','Mental-emotional','Gynecology','Digestive','Respiratory'],
+  patient:null,
+  history:[],
+  questionCount:0,
+  submitted:false,
+};
+
+function showSec(id){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});
+  document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('sec-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if(id==='history') renderHistory();
+}
+function toggleTheme(){
+  var t=document.documentElement.getAttribute('data-theme');
+  var n=t==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',n);
+  document.getElementById('theme-btn').textContent=n==='dark'?'☀️':'🌙';
+  localStorage.setItem('wbyi-theme',n);
+}
+function toast(msg){
+  var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show')},2400);
+}
+
+function setDiff(d,el){
+  state.difficulty=d;
+  document.querySelectorAll('.diff-btn').forEach(function(b){b.classList.remove('active')});
+  el.classList.add('active');
+}
+function toggleFocus(f,el){
+  var i=state.focuses.indexOf(f);
+  if(i>-1) state.focuses.splice(i,1);
+  else state.focuses.push(f);
+  el.classList.toggle('active',state.focuses.indexOf(f)>-1);
+}
+function toggleDx(el,type){el.classList.toggle('sel');}
+
+// ═══════════════════════════════════════
+// GENERATE CASE
+// ═══════════════════════════════════════
+async function generateCase(){
+  var spinner=document.getElementById('gen-case-spinner');
+  spinner.style.display='inline-block';
+  var custom=document.getElementById('custom-scenario').value.trim();
+  var focuses=state.focuses.length>0?state.focuses.join(', '):'any area';
+  var prompt=custom
+    ?'Create a TCM patient case based on this scenario: '+custom
+    :'Create a realistic TCM patient case at '+state.difficulty+' level focusing on: '+focuses+'. The case should be clinically rich and educationally valuable for a DAcHM student.';
+  prompt+='\n\nReturn ONLY a JSON object with these exact keys:\n- name (string: full name)\n- age (number)\n- sex (string: Male/Female/Non-binary)\n- occupation (string)\n- chiefComplaint (string: 1-2 sentences, vague and natural, as a patient would say it — NOT clinical language)\n- hiddenPattern (string: the actual TCM pattern diagnosis — this is hidden from student)\n- hiddenPoints (string: ideal point prescription)\n- hiddenFormula (string: ideal formula)\n- hiddenPrinciple (string: treatment principle)\n- personality (string: brief description for roleplay — shy, anxious, stoic, chatty, etc)\n- backstory (string: 2-3 sentences of relevant life context)\nNo markdown, no preamble.';
+
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:'You are a TCM clinical education expert generating realistic patient cases for student practice. Cases should reflect real clinical presentations with appropriate complexity for the difficulty level.',
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    var data=await resp.json();
+    var text=data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    state.patient=JSON.parse(text);
+    state.history=[];
+    state.questionCount=0;
+    state.submitted=false;
+    launchInterview();
+  }catch(e){toast('Generation failed — check connection');}
+  spinner.style.display='none';
+}
+
+function surpriseCase(){
+  document.getElementById('custom-scenario').value='';
+  var diffs=['beginner','intermediate','advanced','boards'];
+  var d=diffs[Math.floor(Math.random()*diffs.length)];
+  document.querySelectorAll('.diff-btn').forEach(function(b){
+    b.classList.toggle('active',b.textContent.toLowerCase().includes(d));
+  });
+  state.difficulty=d;
+  generateCase();
+}
+
+function launchInterview(){
+  var pt=state.patient;
+  document.getElementById('pt-name').textContent=pt.name+', '+pt.age;
+  document.getElementById('pt-meta').textContent=pt.sex+' · '+pt.occupation;
+  document.getElementById('pt-cc').textContent='"'+pt.chiefComplaint+'"';
+
+  // add opening bubble
+  state.history=[{role:'system',content:'New patient: '+pt.name+', '+pt.age+', '+pt.sex+'. Chief complaint: '+pt.chiefComplaint+'. Personality: '+pt.personality+'. Backstory: '+pt.backstory+'. Hidden TCM pattern: '+pt.hiddenPattern+'. Respond as this patient would — stay in character, be realistic, occasionally vague or emotional. Never reveal the pattern directly.'}];
+
+  var chatWrap=document.getElementById('chat-wrap');
+  chatWrap.innerHTML='';
+  addBubble('system','Patient is ready. Begin your intake interview.');
+  addBubble('patient','"'+pt.chiefComplaint+'"');
+
+  document.getElementById('feedback-wrap').style.display='none';
+  document.getElementById('dx-principle').value='';
+  document.getElementById('dx-points').value='';
+  document.getElementById('dx-formula').value='';
+  document.getElementById('custom-pattern').value='';
+  document.querySelectorAll('.dx-chip').forEach(function(c){c.classList.remove('sel')});
+  updateQCount();
+
+  document.getElementById('pill-interview').style.display='';
+  showSecDirect('interview');
+}
+
+function showSecDirect(id){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});
+  document.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('sec-'+id).classList.add('active');
+  var pills={'setup':0,'interview':1,'history':2};
+  var pillEls=document.querySelectorAll('.pill');
+  if(pillEls[pills[id]]) pillEls[pills[id]].classList.add('active');
+}
+
+function addBubble(role,text){
+  var wrap=document.getElementById('chat-wrap');
+  var div=document.createElement('div');
+  div.className='bubble '+role;
+  div.textContent=text;
+  wrap.appendChild(div);
+  wrap.scrollTop=wrap.scrollHeight;
+}
+
+function quickAsk(q){
+  document.getElementById('ask-field').value=q;
+  sendQuestion();
+}
+
+function updateQCount(){
+  var userMsgs=state.history.filter(function(m){return m.role==='user'}).length;
+  document.getElementById('q-count').textContent=userMsgs>0?'('+userMsgs+' questions asked)':'';
+}
+
+async function sendQuestion(){
+  var field=document.getElementById('ask-field');
+  var q=field.value.trim();
+  if(!q||!state.patient) return;
+  field.value='';
+  addBubble('student',q);
+
+  // Add to history
+  state.history.push({role:'user',content:q});
+  state.questionCount++;
+  updateQCount();
+
+  // loading bubble
+  var loadDiv=document.createElement('div');
+  loadDiv.className='bubble patient';
+  loadDiv.innerHTML='<span class="spinner"></span>';
+  document.getElementById('chat-wrap').appendChild(loadDiv);
+  document.getElementById('chat-wrap').scrollTop=99999;
+
+  try{
+    var messages=state.history.filter(function(m){return m.role!=='system'});
+    var sysMsg=state.history[0].content;
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:300,
+        system:sysMsg+'\n\nRespond naturally as this patient. Keep responses to 1-3 sentences. Be realistic — patients dont always know clinical terminology, they describe sensations and experiences. Occasionally show emotion or hesitation.',
+        messages:messages
+      })
+    });
+    var data=await resp.json();
+    var answer=data.content[0].text.trim();
+    state.history.push({role:'assistant',content:answer});
+    loadDiv.textContent='"'+answer+'"';
+  }catch(e){
+    loadDiv.textContent='(Connection error — try again)';
+  }
+}
+
+// ═══════════════════════════════════════
+// DIAGNOSIS & FEEDBACK
+// ═══════════════════════════════════════
+async function submitDiagnosis(){
+  if(!state.patient){toast('Generate a case first');return;}
+  var patterns=Array.from(document.querySelectorAll('.dx-chip.sel')).map(function(c){return c.textContent});
+  var customPat=document.getElementById('custom-pattern').value.trim();
+  if(customPat) patterns.push(customPat);
+  var principle=document.getElementById('dx-principle').value.trim();
+  var points=document.getElementById('dx-points').value.trim();
+  var formula=document.getElementById('dx-formula').value.trim();
+
+  if(!patterns.length&&!principle){toast('Add your diagnosis before submitting');return;}
+
+  var spinner=document.getElementById('submit-spinner');
+  spinner.style.display='inline-block';
+
+  var conversationSummary=state.history.filter(function(m){return m.role==='user'||m.role==='assistant'}).map(function(m){return (m.role==='user'?'Student: ':'Patient: ')+m.content}).join('\n');
+
+  var prompt='A DAcHM student interviewed a patient and submitted this diagnosis.\n\nPATIENT: '+state.patient.name+', '+state.patient.age+', '+state.patient.sex+'\nChief complaint: '+state.patient.chiefComplaint+'\n\nCONVERSATION SUMMARY:\n'+conversationSummary+'\n\nSTUDENT DIAGNOSIS:\nPatterns: '+patterns.join(', ')+'\nTreatment principle: '+principle+'\nPoints: '+points+'\nFormula: '+formula+'\n\nACTUAL ANSWERS (hidden from student):\nPattern: '+state.patient.hiddenPattern+'\nPrinciple: '+state.patient.hiddenPrinciple+'\nPoints: '+state.patient.hiddenPoints+'\nFormula: '+state.patient.hiddenFormula+'\n\nProvide detailed clinical feedback. Return ONLY a JSON object with these keys:\n- score (number 0-100)\n- grade (string: e.g. "Strong clinical reasoning" or "Developing pattern recognition")\n- patternFeedback (string)\n- principleFeedback (string)\n- pointsFeedback (string)\n- formulaFeedback (string)\n- studyNext (string: specific topics to review)\nNo markdown, no preamble.';
+
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:'You are an experienced TCM clinical supervisor providing constructive, educational feedback to a student. Be encouraging but precise. Highlight both strengths and specific areas for improvement. Reference classical theory where relevant.',
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    var data=await resp.json();
+    var text=data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    var fb=JSON.parse(text);
+
+    document.getElementById('fb-score').textContent=fb.score+'/100';
+    document.getElementById('fb-score').style.color=fb.score>=80?'var(--teal)':fb.score>=60?'var(--gold)':'var(--pur2)';
+    document.getElementById('fb-grade').textContent=fb.grade;
+    document.getElementById('fb-pattern').textContent=fb.patternFeedback;
+    document.getElementById('fb-principle').textContent=fb.principleFeedback;
+    document.getElementById('fb-points').textContent=fb.pointsFeedback;
+    document.getElementById('fb-formula').textContent=fb.formulaFeedback;
+    document.getElementById('fb-study').textContent=fb.studyNext;
+    document.getElementById('feedback-wrap').style.display='block';
+    document.getElementById('feedback-wrap').scrollIntoView({behavior:'smooth'});
+
+    // save case
+    DB.cases.unshift({
+      date:new Date().toISOString().slice(0,10),
+      name:state.patient.name,
+      age:state.patient.age,
+      difficulty:state.difficulty,
+      cc:state.patient.chiefComplaint,
+      pattern:state.patient.hiddenPattern,
+      studentPattern:patterns.join(', '),
+      score:fb.score,
+      grade:fb.grade,
+    });
+    save();
+  }catch(e){toast('Feedback failed — check connection');}
+  spinner.style.display='none';
+}
+
+function newCase(){
+  state.patient=null;
+  document.getElementById('pill-interview').style.display='none';
+  showSecDirect('setup');
+  document.querySelectorAll('.pill')[0].classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════
+function renderHistory(){
+  var el=document.getElementById('history-list');
+  if(!DB.cases.length){el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--tx3);font-size:13px">No cases completed yet.</div>';return;}
+  var avg=Math.round(DB.cases.reduce(function(a,b){return a+b.score},0)/DB.cases.length);
+  el.innerHTML='<div class="card" style="text-align:center;margin-bottom:.65rem"><div style="font-family:DM Serif Display,serif;font-size:32px;color:var(--pur2)">'+avg+'</div><div style="font-size:11px;color:var(--tx3)">average score across '+DB.cases.length+' cases</div></div>'
+    +DB.cases.map(function(c){
+      var scoreColor=c.score>=80?'var(--teal)':c.score>=60?'var(--gold)':'var(--pur2)';
+      var dateStr=new Date(c.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      return '<div class="case-entry"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="ce-name">'+c.name+', '+c.age+'</div><div class="ce-score" style="color:'+scoreColor+'">'+c.score+'/100</div></div>'
+        +'<div class="ce-meta">'+c.difficulty+' · '+dateStr+' · '+c.grade+'</div>'
+        +'<div style="font-size:11px;color:var(--tx3);margin-top:.2rem">Actual: '+c.pattern+'</div>'
+        +'<div style="font-size:11px;color:var(--pur2);margin-top:1px">Your Dx: '+c.studentPattern+'</div>'
+        +'</div>';
+    }).join('');
+}
+
+
+function handleWhyPhoto(input){
+  if(!input.files||!input.files[0]) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var img=document.getElementById('why-img-preview');
+    img.src=e.target.result;
+    img.style.display='block';
+    document.getElementById('why-upload-content').style.display='none';
+    localStorage.setItem('wbyi-why-img',e.target.result);
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+// restore why image
+var savedWhyImg=localStorage.getItem('wbyi-why-img');
+if(savedWhyImg){
+  var img=document.getElementById('why-img-preview');
+  if(img) img.src=savedWhyImg;
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+load();
+var savedTheme=localStorage.getItem('wbyi-theme')||'dark';
+document.documentElement.setAttribute('data-theme',savedTheme);
+document.getElementById('theme-btn').textContent=savedTheme==='dark'?'☀️':'🌙';
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('/what-brings-you-in/sw.js',{scope:'/what-brings-you-in/'})
+      .then(function(r){console.log('SW',r.scope)}).catch(function(e){console.log('SW fail',e)});
+  });
+}
+</script>
+</body>
+</html>
