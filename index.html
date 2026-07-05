@@ -529,7 +529,8 @@ async function generateCase(){
     var data=await resp.json();
     if(data.error){toast('API: '+data.error.message);spinner.style.display='none';return;}
     var text=data.content[0].text.trim();
-    state.patient=JSON.parse(extractJSON(text));
+    state.patient=safeParsePatient(text);
+    if(!state.patient){toast("Generation failed — try again");spinner.style.display="none";return;}
     // Normalize field names — handle every possible variant Claude might return
     var p=state.patient;
     // Chief complaint — most critical field
